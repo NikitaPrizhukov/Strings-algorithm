@@ -1,0 +1,50 @@
+#include <iostream>
+#include <string>
+
+//находит первую не повторяющуюся букву в строке
+
+using namespace std;
+
+int find(string a) {
+
+	int** word = new int*[26];
+
+	for (int i = 0; i < 26; i++) {
+		word[i] = new int[2];
+		word[i][0] = 0;
+	}
+
+	for (size_t i = 0; i < a.length(); i++) {
+		word[a[i] - 97][0]++;
+		word[a[i] - 97][1] = i;
+	}
+
+	int index = a.length()+1;
+
+	for (int i = 0; i < 26; i++) {
+		if (word[i][0] == 1) {
+			if (word[i][1] < index) {
+				index = word[i][1];
+			}
+		}
+	}
+	return index;
+}
+
+int main() {
+
+	string p;
+	getline(cin, p);
+
+	int index = find(p);
+
+	if (index == p.length() + 1) {
+		cout << "NO";
+	}
+	else {
+		cout << "YES" << endl;
+		cout << p[index];
+	}
+
+	return 0;
+}
