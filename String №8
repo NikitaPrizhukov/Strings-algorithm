@@ -1,0 +1,82 @@
+#include <iostream>
+#include <string>
+#include <deque>
+#include <algorithm>
+
+using namespace std;
+
+//нахождение общего суффикса множества
+
+void findPref(string mas, deque<char>& answer, int count) {
+
+	bool* find = new bool[26];
+
+	for (int i = 0; i < 26; i++) {
+		find[i] = false;
+	}
+
+	deque<char> a;
+
+	for (int i = mas.length() - 1; i > -1; i--) {
+
+		if (find[mas[i] - 97] == false) {
+			a.push_front(mas[i]);
+			find[mas[i] - 97] = true;
+		}
+	}
+
+	if (answer.empty()) {
+		answer = a;
+		return;
+	}
+
+	size_t one = answer.size() - 1;
+	size_t two = a.size() - 1;
+	deque<char> an;
+
+	for (int i = min(a.size(), answer.size()) - 1; i > -1; i--) {
+
+		if (answer[one] == a[two]) {
+			an.push_front(a[two]);
+			one--;
+			two--;
+		}
+		else {
+			break;
+		}
+	}
+
+	answer = an;
+}
+
+int main() {
+
+	string c;
+	getline(cin, c);
+
+	int count = stoi(c);
+
+	if (count < 1) {
+		return 0;
+	}
+
+	string mas;
+	deque<char> answer;
+	size_t lenMin = 100001;
+
+	for (int i = 0; i < count; i++) {
+
+		getline(cin, mas);
+		findPref(mas, answer, count);
+
+		if (answer.empty()) {
+			return 0;
+		}
+	}
+
+	for (int i = 0; i < answer.size(); i++) {
+		cout << answer[i];
+	}
+
+	return 0;
+}
