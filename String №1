@@ -1,0 +1,67 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
+
+//проверяет возможность получения из первого слова второе, путем либо 1 удалением символа, либо добавлением символа, либо заменой
+
+string find_in_base(string& name, string& base) {
+
+    int indexName = 0;
+    int indexBase = 0;
+    int count = 0;
+
+    for (size_t i = 0; i < min(name.length(), base.length()); i++) {
+
+        if (name[indexName] == base[indexBase]) {
+            indexName++;
+            indexBase++;
+        }
+        else {
+            count++;
+            if (name.length() > base.length()) {
+                indexName++;
+            }
+            else if (name.length() < base.length()) {
+                indexBase++;
+            }
+            else {
+                indexName++;
+                indexBase++;
+            }
+        }
+
+        if (count > 1) {
+            return "FAIL";
+        }
+    }
+    return "OK";
+}
+
+int main() {
+
+    string name;
+    string base;
+
+    getline(cin, name);
+    getline(cin, base);
+
+    int len = name.length() - base.length();
+
+    if (name == "" || base == "") {
+        cout << "FAIL";
+        return 0;
+    }
+
+
+    if (len > 1 || len < -1) {
+        cout << "FAIL";
+    }
+    else {
+        cout << find_in_base(name, base);
+    }
+
+    return 0;
+}
