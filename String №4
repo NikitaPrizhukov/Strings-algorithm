@@ -1,0 +1,52 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+// выводит сочитание всех слов из списков, первое слово из первого спизка + первое слово из второго списка, первое слово из n-го списка
+// первое слово из первого спизка + первое слово из второго списка, второе слово из n-го списка
+
+void book(string** tab, int* masIndex, string text, int table, int index = 0) {
+
+	for (size_t i = 0; i < masIndex[index]; i++) {
+
+		if (index + 1 < table) {
+			book(tab, masIndex, text + tab[index][i] + " ", table, index + 1);
+		}
+		else {
+			for (size_t f = 0; f < masIndex[index]; f++) {
+				cout << text << tab[index][f] << endl;
+			}
+			return;
+		}
+	}
+}
+
+int main() {
+
+	int table = 0;
+	cin >> table;
+
+	string** tab = new string * [table];
+	int* masIndex = new int[table];
+
+	for (int i = 0; i < table; i++) {
+		int count;
+		cin >> count;
+		masIndex[i] = count;
+		tab[i] = new string[count];
+		for (int f = 0; f < count; f++) {
+			cin >> tab[i][f];
+		}
+	}
+
+	for (int i = 0; i < table; i++) {
+		sort(tab[i], tab[i] + masIndex[i]);
+	}
+
+	string text;
+	book(tab, masIndex, text, table);
+
+	return 0;
+}
