@@ -1,0 +1,153 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+//проверяет возможно ли разбиение строки на слова из словаря, слова могу повторятся
+
+struct MyBohr
+{
+	int next_vrtx[26];
+	int pat_num;
+	bool flag;
+};
+
+class Bohr {
+
+	vector<MyBohr> bohr;
+	vector<string> pattern;
+
+public:
+
+	MyBohr makeBohr() {
+
+		MyBohr v;
+
+		for (int i = 0; i < 26; i++) {
+			v.next_vrtx[i] = -1;
+		}
+
+		v.flag = false;
+
+		return v;
+	}
+
+	void initBohr() {
+		bohr.push_back(makeBohr());
+	}
+
+	void addString(string s) {
+
+		int num = 0;
+
+		for (int i = 0; i < s.length(); i++) {
+			int ch = s[i] - 97;
+			if (bohr[num].next_vrtx[ch] == -1) {
+				bohr.push_back(makeBohr());
+				bohr[num].next_vrtx[ch] = bohr.size() - 1;
+			}
+			num = bohr[num].next_vrtx[ch];
+		}
+
+		bohr[num].flag = true;
+		pattern.push_back(s);
+		bohr[num].pat_num = pattern.size() - 1;
+	}
+
+	bool findStr(string& s) {
+
+		int num = 0;
+		for (int i = 0; i < s.length(); i++) {
+			int ch = s[i] - 97;
+			if (bohr[num].next_vrtx[ch] == -1) {
+				return false;
+			}
+			num = bohr[num].next_vrtx[ch];
+		}
+
+		return true;
+	}
+
+	int findStrLast(string s) {
+
+		int num = 0;
+		for (int i = 0; i < s.length(); i++) {
+			int ch = s[i] - 97;
+			if (bohr[num].next_vrtx[ch] == -1) {
+				return 0;
+			}
+			num = bohr[num].next_vrtx[ch];
+		}
+		if (bohr[num].flag == true) {
+			return 2;
+		}
+		return 1;
+	}
+};
+
+
+
+int main() {
+
+	string text;
+	getline(cin, text);
+
+	string count;
+	getline(cin, count);
+
+	Bohr b;
+	b.initBohr();
+
+	string a;
+	int max = 0;
+
+	for (int i = 0; i < stoi(count); i++) {
+		getline(cin, a);
+		b.addString(a);
+		if (text == "" && a != "") {
+			cout << "NO";
+			return 0;
+		}
+		if (max < a.length()) {
+			max = a.length();
+		}
+	}
+
+
+	string t;
+	bool* index = new bool[text.length() + 1];
+
+	for (int i = 0; i < text.length() + 1; i++) {
+		index[i] = false;
+	}
+
+	index[0] = true;
+
+	for (size_t i = 1; i < text.length() + 1; i++) {
+
+		if (index[i - 1] == false) {
+			continue;
+		}
+
+
+		for (size_t f = i; f < text.length() + 1; f++) {
+			t.push_back(text[f - 1]);
+			int a = b.findStrLast(t);
+			if (a == 2) {
+				index[f] = true;
+			}
+			else if (a == 0) {
+				break;
+			}
+		}
+		t.clear();
+		if (index[text.length()] == true) {
+			cout << "YES";
+			return 0;
+		}
+	}
+
+	cout << "NO";
+
+	return 0;
+}
