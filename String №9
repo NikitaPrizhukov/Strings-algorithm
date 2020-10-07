@@ -1,0 +1,67 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+//нахождение максимального общего префикса во множестве
+
+int findPref(string* mas, int count, size_t lenMin) {
+
+	if (count == 1) {
+		return lenMin;
+	}
+
+	int* index = new int[count];
+
+	for (int i = 0; i < count; i++) {
+		index[i] = 0;
+	}
+
+	int maxLen = 0;
+
+	for (size_t i = 0; i < lenMin; i++) {
+
+		for (int f = 0; f < count; f++) {
+			if (mas[0][i] != mas[f][i]) {
+				return maxLen;
+			}
+		}
+		maxLen++;
+	}
+	return maxLen;
+}
+
+int main() {
+
+	string c;
+	getline(cin, c);
+
+	int count = stoi(c);
+
+	if (count < 1) {
+		cout << 0;
+		return 0;
+	}
+
+	string* mas = new string[count];
+
+	size_t lenMin = 100001;
+
+	for (int i = 0; i < count; i++) {
+		getline(cin, mas[i]);
+
+		if (lenMin > mas[i].length()) {
+			lenMin = mas[i].length();
+		}
+
+		if (mas[i] == "") {
+			cout << 0;
+			return 0;
+		}
+	}
+
+	cout << findPref(mas, count, lenMin);
+
+	return 0;
+}
