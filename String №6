@@ -1,0 +1,44 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+//возможно ли починить ПСП
+
+int invers(string& s, int left = 0, int right = 0, int count = 0) {
+
+	for (size_t i = 0; i < s.length(); i++) {
+
+		if (s[i] == '(' && right < s.length() / 2) {
+			right++;
+		}
+		else if (s[i] == ')' && left < right) {
+			left++;
+		}
+		else if (s[i] == ')' && right < s.length() / 2) {
+			right++;
+			count++;
+		}
+		else if (s[i] == '(' && left < s.length() / 2) {
+			left++;
+			count++;
+		}
+	}
+	return count;
+}
+
+int main() {
+
+	string s;
+	getline(cin,s);
+
+	if (s.length() % 2 != 0 || s == "") {
+		cout << "NO";
+		return 0;
+	}
+
+	cout << "YES" << endl << invers(s);
+
+	return 0;
+}
