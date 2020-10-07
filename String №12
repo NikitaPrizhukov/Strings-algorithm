@@ -1,0 +1,176 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+//скомбенировать все слова в списке друг сдругом и вывести номера тех, кто образует палиндром
+
+bool comp(vector<int>& a, vector<int>& b) {
+	if (b[0] == a[0]) {
+		return b[1] > a[1];
+	}
+	return b[0] > a[0];
+}
+
+struct MyBohr
+{
+	int next_vrtx[26];
+	bool flag;
+	vector<int> one;
+	int ptr;
+
+};
+
+class Bohr {
+
+	vector<MyBohr> bohr;
+	vector<string> pattern;
+	vector<vector<int>> an;
+
+public:
+
+	MyBohr makeBohr() {
+
+		MyBohr v;
+
+		memset(v.next_vrtx, 255, sizeof(v.next_vrtx));
+
+		v.flag = false;
+
+		return v;
+	}
+
+	void initBohr() {
+		bohr.push_back(makeBohr());
+	}
+
+	void addString(string s) {
+
+		int num = 0;
+		pattern.push_back(s);
+
+		for (int i = 0; i < s.length(); i++) {
+			int ch = s[i] - 97;
+			if (bohr[num].next_vrtx[ch] == -1) {
+				bohr.push_back(makeBohr());
+				bohr[num].next_vrtx[ch] = bohr.size() - 1;
+			}
+			num = bohr[num].next_vrtx[ch];
+			bohr[num].one.push_back(pattern.size() - 1);
+		}
+
+		bohr[num].flag = true;
+		bohr[num].ptr = pattern.size() - 1;
+	}
+
+	void putAn(string& a, string& b, int& indexA, int& indexB) {
+
+		if (findPolindrom(a, b)) {
+			an.push_back(vector<int>());
+			an[an.size() - 1].push_back(indexA + 1);
+			an[an.size() - 1].push_back(indexB + 1);
+		}
+
+		if (findPolindrom(b, a)) {
+			an.push_back(vector<int>());
+			an[an.size() - 1].push_back(indexB + 1);
+			an[an.size() - 1].push_back(indexA + 1);
+		}
+	}
+
+	void findStrRevers(string s, int indexS) {
+
+		int num = 0;
+		for (int i = s.length() - 1; i > -1; i--) {
+			int ch = s[i] - 97;
+			if (bohr[num].next_vrtx[ch] == -1) {
+				return;
+			}
+			num = bohr[num].next_vrtx[ch];
+
+			if (bohr[num].flag == true && i != 0) {
+				putAn(s, pattern[bohr[num].ptr], indexS, bohr[num].ptr);
+			}
+		}
+
+		for (size_t i = 0; i < bohr[num].one.size(); i++) {
+
+			if (bohr[num].one[i] == indexS) {
+				continue;
+			}
+			putAn(s, pattern[bohr[num].one[i]], indexS, bohr[num].one[i]);
+		}
+	}
+
+	bool findPolindrom(string& a, string& b) {
+
+		string sum = a;
+		sum += b;
+		int centerLeft;
+		int centerRight;
+
+		if (sum.length() % 2 == 0) {
+			centerLeft = (sum.length() / 2) - 1;
+			centerRight = centerLeft + 1;
+		}
+		else {
+			centerLeft = (sum.length() / 2) - 1;
+			centerRight = centerLeft + 2;
+		}
+
+		while (centerLeft > -1) {
+
+			if (sum[centerLeft] != sum[centerRight]) {
+				return false;
+			}
+
+			centerLeft--;
+			centerRight++;
+		}
+		return true;
+	}
+
+	void printAn() {
+
+		if (an.size() == 0) {
+			return;
+		}
+
+		sort(an.begin(), an.end(), comp);
+
+		cout << an[0][0] << " " << an[0][1] << endl;
+
+		for (size_t i = 1; i < an.size(); i++) {
+			if (an[i][0] != an[i - 1][0] || an[i][1] != an[i - 1][1]) {
+				cout << an[i][0] << " " << an[i][1] << endl;
+			}
+		}
+	}
+};
+
+int main() {
+
+	string count;
+	getline(cin, count);
+	int cou = stoi(count);
+
+	string* mas = new string[cou];
+	Bohr b;
+	b.initBohr();
+
+	for (int i = 0; i < cou; i++) {
+		getline(cin, mas[i]);
+		b.addString(mas[i]);
+	}
+
+	for (int i = 0; i < cou; i++) {
+		b.findStrRevers(mas[i], i);
+	}
+
+	b.printAn();
+
+	return 0;
+}
