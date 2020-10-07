@@ -1,0 +1,56 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+//заменить все определенные подстроки в строке, другой строкой
+
+int main() {
+
+	string text;
+	string zam;
+	string thi;
+
+	cin >> text;
+	cin >> zam;
+	cin >> thi;
+
+	string dop;
+	int index = 0;
+
+	for (size_t i = 0; i < text.length(); i++) {
+
+		if (text[i] == zam[index]) {
+			dop.push_back(text[i]);
+			index++;
+		}
+		else if (dop.empty() != true) {
+			if (dop == zam) {
+				cout << thi;
+				dop.clear();
+				index = 0;
+				i--;
+			}
+			else {
+				cout << dop;
+				dop.clear();
+				index = 0;
+				i--;
+			}
+		}
+		else {
+			cout << text[i];
+		}
+	}
+
+	if (!dop.empty()) {
+		if (dop == zam) {
+			cout << thi;
+		}
+		else {
+			cout << dop;
+		}
+	}
+
+	return 0;
+}
