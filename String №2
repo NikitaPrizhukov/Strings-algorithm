@@ -1,0 +1,85 @@
+#include <iostream>
+#include <math.h>
+#include <string>
+#include <deque>
+using namespace std;
+
+//из строки получает самый длинный палиндром
+
+string polindrom(string& p) {
+
+	if (p.length() == 0) {
+		return 0;
+	}
+
+	int* word = new int[26];
+	int* wordLeft = new int[26];
+
+
+	for (int i = 0; i < 26; i++) {
+
+		wordLeft[i] = 0;
+		word[i] = 0;
+	}
+
+	for (size_t i = 0; i < p.length(); i++) {
+
+		word[p[i] - 97]++;
+
+	}
+
+	int ne = 0;
+	int che = 0;
+	string strOne;
+
+	for (int i = 0; i < 26; i++) {
+
+		if (word[i] > 0) {
+
+			for (int f = 0; f < word[i] / 2; f++) {
+				strOne.push_back(i + 97);
+				wordLeft[i]++;
+			}
+			word[i] = word[i] - word[i] / 2;
+		}
+	}
+
+	deque<char> left;
+
+	for (int i = 25; i > -1; i--) {
+
+		if (wordLeft[i] > 0) {
+
+			for (int f = 0; f < wordLeft[i]; f++) {
+				left.push_back(i + 97);
+			}
+		}
+	}
+
+
+	for (int i = 0; i < 26; i++) {
+		if (word[i] - wordLeft[i] != 0) {
+			left.push_front(i + 97);
+			break;
+		}
+	}
+
+	int size = left.size();
+
+	for (int i = 0; i < size; i++) {
+		strOne.push_back(left.front());
+		left.pop_front();
+	}
+
+	return strOne;
+}
+
+int main() {
+
+	string p;
+	getline(cin, p);
+
+	cout << polindrom(p);
+
+	return 0;
+}
