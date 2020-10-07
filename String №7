@@ -1,0 +1,101 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+//нахождение самого частого слова с помощью бора
+
+struct MyBohr
+{
+	int next_vrtx[26];
+	int count = 0;
+};
+
+class Bohr {
+
+	vector<MyBohr> bohr;
+	int maxC = 0;
+	string max;
+
+public:
+
+	MyBohr makeBohr() {
+
+		MyBohr v;
+
+		memset(v.next_vrtx, 255, sizeof(v.next_vrtx));
+
+		return v;
+	}
+
+	void initBohr() {
+		bohr.push_back(makeBohr());
+	}
+
+	void addString(string s) {
+
+		int num = 0;
+
+		for (int i = 0; i < s.length(); i++) {
+			int ch = s[i] - 97;
+			if (bohr[num].next_vrtx[ch] == -1) {
+				bohr.push_back(makeBohr());
+				bohr[num].next_vrtx[ch] = bohr.size() - 1;
+			}
+			num = bohr[num].next_vrtx[ch];
+		}
+		bohr[num].count++;
+
+		if (maxC < bohr[num].count) {
+			maxC = bohr[num].count;
+			max = s;
+		}
+		else if (maxC == bohr[num].count) {
+			if (s < max) {
+				max = s;
+			}
+		}
+	}
+
+	bool findStr(string s) {
+
+		int num = 0;
+		for (int i = 0; i < s.length(); i++) {
+			int ch = s[i] - 97;
+			if (bohr[num].next_vrtx[ch] == -1) {
+				return false;
+			}
+			num = bohr[num].next_vrtx[ch];
+		}
+
+
+		return true;
+	}
+
+	void print() {
+
+		cout << max;
+	}
+};
+
+
+int main() {
+
+	string count;
+	getline(cin, count);
+
+	string text;
+	Bohr b;
+	b.initBohr();
+
+	for (int i = 0; i < stoi(count); i++) {
+		getline(cin, text);
+		b.addString(text);
+	}
+
+	b.print();
+
+	return 0;
+}
